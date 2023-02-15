@@ -1,0 +1,113 @@
+module point-to-point {
+
+  namespace "http://example.com/point-to-point";
+  prefix point-to-point;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-common {
+    prefix tailf;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+      import tailf-ned-cisco-ios-xr {
+   prefix cisco-ios-xr;
+  }
+
+  import cisco-iosxr-cli {
+   prefix iosxr-ned-id;
+  }
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+
+  description
+    "Bla bla...";
+
+  revision 2016-01-01 {
+    description
+      "Initial revision.";
+  }
+
+augment /ncs:services {
+  list point-to-point {
+    description "This is an RFS skeleton service";
+
+key name;
+      leaf name {
+        type string;
+      }
+
+    uses ncs:service-data;
+    ncs:servicepoint point-to-point-servicepoint;
+
+
+
+        
+      
+      container connections {
+        list links {
+          key "name";
+            leaf name {
+              type string;
+            }
+
+            leaf device_a {
+              type leafref {
+                path "/ncs:devices/ncs:device/ncs:name";
+              }
+            }
+
+            choice interface_a {
+              case GigabitEthernet {
+                leaf GigabitEthernet_a {
+                  type leafref {
+                    path "deref(../device_a)/../ncs:config" + 
+                          "/cisco-ios-xr:interface/cisco-ios-xr:GigabitEthernet/cisco-ios-xr:id";
+                  }
+                }
+                leaf ipv4-address_a {
+                  type inet:ipv4-address;
+                }
+                leaf mask_a {
+                  type inet:ipv4-address;
+                }
+
+              }
+              
+              
+            }
+
+            leaf device_b {
+              type leafref {
+                path "/ncs:devices/ncs:device/ncs:name";
+              }
+            }
+            choice interface_b {
+              case GigabitEthernet {
+                leaf GigabitEthernet_b {
+                  type leafref {
+                    path "deref(../device_b)/../ncs:config" + 
+                          "/cisco-ios-xr:interface/cisco-ios-xr:GigabitEthernet/cisco-ios-xr:id";
+                  }
+                }
+                leaf ipv4-address_b {
+                  type inet:ipv4-address;
+                }
+                leaf mask_b {
+                  type inet:ipv4-address;
+                }
+              }
+            }
+        }
+      }
+
+      
+      
+    
+  }
+}
+}
