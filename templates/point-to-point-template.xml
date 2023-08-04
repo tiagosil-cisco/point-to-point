@@ -1,4 +1,7 @@
+
+
 <config-template xmlns="http://tail-f.com/ns/config/1.0">
+
   <devices xmlns="http://tail-f.com/ns/ncs">
     <device>
       <!--
@@ -6,14 +9,79 @@
           model. In this skeleton the devices are specified in a leaf-list.
           Select all devices in that leaf-list:
       -->
-      <name>{/device}</name>
+      <name>{/side_a/device}</name>
       <config>
-        <!--
-            Add device-specific parameters here.
-            In this skeleton the, java code sets a variable DUMMY, use it
-            to set something on the device e.g.:
-            <ip-address-on-device>{$DUMMY}</ip-address-on-device>
-        -->
+        <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <?if {interface_type = 'GigabitEthernet'}?>
+          <GigabitEthernet>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{ipv4-address}</ip>
+                <mask>{mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </GigabitEthernet>
+          <?elif {interface_type = 'TenGigE'}?>
+          <TenGigE>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{ipv4-address}</ip>
+                <mask>{mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </TenGigE>
+          <?elif {interface_type = 'FortyGigE'}?>
+          <FortyGigE>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{ipv4-address}</ip>
+                <mask>{mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </FortyGigE>
+          <?elif {interface_type = 'HundredGigE'}?>
+          <HundredGigE>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{ipv4-address}</ip>
+                <mask>{mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </HundredGigE>
+          <?end?>
+        </interface>
       </config>
     </device>
   </devices>

@@ -12,13 +12,7 @@ module point-to-point {
   import tailf-ncs {
     prefix ncs;
   }
-      import tailf-ned-cisco-ios-xr {
-   prefix cisco-ios-xr;
-  }
 
-  import cisco-iosxr-cli {
-   prefix iosxr-ned-id;
-  }
   import ietf-yang-types {
     prefix yang;
   }
@@ -32,82 +26,88 @@ module point-to-point {
       "Initial revision.";
   }
 
+grouping ipv4_address {
+  leaf ipv4-address {
+      type inet:ipv4-address;
+    }
+    leaf mask {
+      type inet:ipv4-address;
+    }
+}
+
+grouping device_int_config {
+  leaf device {
+        type leafref {
+          path "/ncs:devices/ncs:device/ncs:name";
+        }
+        mandatory true;
+      }
+      leaf interface_type {
+        type interface_types;
+        mandatory true;
+      }
+      leaf interface_id {
+      type string;
+      mandatory true;
+    }
+      uses ipv4_address;
+
+      leaf link_state {
+        type enumeration {
+          enum "shutdown";
+          enum "no shutdown";
+        }
+      }
+
+}
+typedef interface_types {
+  type enumeration {
+    enum GigabitEthernet;
+    enum TenGigE;
+    enum FortyGigE;
+    enum HundredGigE;
+  }
+}
+
 augment /ncs:services {
   list point-to-point {
     description "This is an RFS skeleton service";
 
 key name;
       leaf name {
-        type string;
-      }
+      tailf:info "Unique service id";
+      type string;
+    }
 
     uses ncs:service-data;
     ncs:servicepoint point-to-point-servicepoint;
 
-
-
-        
-      
-      container connections {
-        list links {
-          key "name";
-            leaf name {
-              type string;
+    leaf bw {
+            type enumeration {
+              enum "1 Gbps";
+              enum "10 Gbps";
+              enum "40 Gbps";
+              enum "100 Gbps";
             }
+    }
 
-            leaf device_a {
-              type leafref {
-                path "/ncs:devices/ncs:device/ncs:name";
-              }
-            }
+    leaf cdp {
+      type boolean;
+    }
 
-            choice interface_a {
-              case GigabitEthernet {
-                leaf GigabitEthernet_a {
-                  type leafref {
-                    path "deref(../device_a)/../ncs:config" + 
-                          "/cisco-ios-xr:interface/cisco-ios-xr:GigabitEthernet/cisco-ios-xr:id";
-                  }
-                }
-                leaf ipv4-address_a {
-                  type inet:ipv4-address;
-                }
-                leaf mask_a {
-                  type inet:ipv4-address;
-                }
+    leaf mtu {
+      type int32;
+    }
 
-              }
-              
-              
-            }
+    container side_a {
+      uses device_int_config;
+    }
 
-            leaf device_b {
-              type leafref {
-                path "/ncs:devices/ncs:device/ncs:name";
-              }
-            }
-            choice interface_b {
-              case GigabitEthernet {
-                leaf GigabitEthernet_b {
-                  type leafref {
-                    path "deref(../device_b)/../ncs:config" + 
-                          "/cisco-ios-xr:interface/cisco-ios-xr:GigabitEthernet/cisco-ios-xr:id";
-                  }
-                }
-                leaf ipv4-address_b {
-                  type inet:ipv4-address;
-                }
-                leaf mask_b {
-                  type inet:ipv4-address;
-                }
-              }
-            }
-        }
-      }
+    container side_b {
+      uses device_int_config;
+    }
 
-      
-      
-    
+
   }
 }
 }

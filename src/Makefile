@@ -12,8 +12,8 @@ FXS = $(SRC:yang/%.yang=../load-dir/%.fxs)
 ## or to other YANG files
 # YANGPATH += ../../<ned-name>/src/ncsc-out/modules/yang \
 # 	../../<pkt-name>/src/yang
-YANGPATH += ../../cisco-iosxr-cli-7.45/src/ncsc-out/modules/yang \
-	../../cisco-iosxr-cli-7.45/src/
+#
+#	../../cisco-iosxr-cli-7.45/src/
 
 NCSCPATH   = $(YANGPATH:%=--yangpath %)
 YANGERPATH = $(YANGPATH:%=--path %)
