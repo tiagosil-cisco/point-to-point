@@ -1,7 +1,9 @@
 # -*- mode: python; python-indent: 4 -*-
 import ncs
+import ipaddress
 from ncs.application import Service
-
+# from . import rm_alloc
+import resource_manager.ipaddress_allocator as ip_allocator
 
 # ------------------------
 # SERVICE CALLBACK EXAMPLE
@@ -13,9 +15,39 @@ class ServiceCallbacks(Service):
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
         self.log.info('Service create(service=', service._path, ')')
+        
+        pool_name = "P2P_LINKS"
+        allocation_name = service.name
+        ip_allocator.net_request(service,
+                             "/ncs:services/point-to-point:point-to-point[name='%s']" % (service.name),
+                             tctx.username,
+                             pool_name,
+                             allocation_name,
+                             30)
+
+
+        net = ip_allocator.net_read(tctx.username, root,
+                                pool_name, allocation_name)
+
+        if not net:
+            self.log.info("Alloc not ready")
+            return
+        
+        # ip_prefix = service.ip_prefix
+        # subnet = ipaddress.IPv4Network(ip_prefix)
+        # ipv4_address_a = subnet.network_address + 1
+        # ipv4_address_b = subnet.network_address + 2
+        # subnet_mask = subnet.netmask
+        
+        subnet = ipaddress.IPv4Network(net)
+        ipv4_address_a = subnet.network_address + 1
+        ipv4_address_b = subnet.network_address + 2
+        subnet_mask = subnet.netmask
 
         vars = ncs.template.Variables()
-        vars.add('DUMMY', '127.0.0.1')
+        vars.add('ipv4_address_a', ipv4_address_a)
+        vars.add('ipv4_address_b', ipv4_address_b)
+        vars.add('subnet_mask', subnet_mask)
         template = ncs.template.Template(service)
         template.apply('point-to-point-template', vars)
 

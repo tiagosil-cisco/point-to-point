@@ -20,8 +20,8 @@
             <mtu>{../mtu}</mtu>
             <ipv4>
               <address>
-                <ip>{ipv4-address}</ip>
-                <mask>{mask}</mask>
+                <ip>{$ipv4_address_a}</ip>
+                <mask>{$subnet_mask}</mask>
               </address>
             </ipv4>
             <?if {link_state = 'no shutdown'}?> 
@@ -37,8 +37,8 @@
             <mtu>{../mtu}</mtu>
             <ipv4>
               <address>
-                <ip>{ipv4-address}</ip>
-                <mask>{mask}</mask>
+                <ip>{$ipv4_address_a}</ip>
+                <mask>{$subnet_mask}</mask>
               </address>
             </ipv4>
             <?if {link_state = 'no shutdown'}?> 
@@ -54,8 +54,8 @@
             <mtu>{../mtu}</mtu>
             <ipv4>
               <address>
-                <ip>{ipv4-address}</ip>
-                <mask>{mask}</mask>
+                <ip>{$ipv4_address_a}</ip>
+                <mask>{$subnet_mask}</mask>
               </address>
             </ipv4>
             <?if {link_state = 'no shutdown'}?> 
@@ -71,8 +71,89 @@
             <mtu>{../mtu}</mtu>
             <ipv4>
               <address>
-                <ip>{ipv4-address}</ip>
-                <mask>{mask}</mask>
+                <ip>{$ipv4_address_a}</ip>
+                <mask>{$subnet_mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </HundredGigE>
+          <?end?>
+        </interface>
+      </config>
+    </device>
+    <device>
+      <!--
+          Select the devices from some data structure in the service
+          model. In this skeleton the devices are specified in a leaf-list.
+          Select all devices in that leaf-list:
+      -->
+      <name>{/side_b/device}</name>
+      <config>
+        <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <?if {interface_type = 'GigabitEthernet'}?>
+          <GigabitEthernet>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{$ipv4_address_b}</ip>
+                <mask>{$subnet_mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </GigabitEthernet>
+          <?elif {interface_type = 'TenGigE'}?>
+          <TenGigE>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{$ipv4_address_b}</ip>
+                <mask>{$subnet_mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </TenGigE>
+          <?elif {interface_type = 'FortyGigE'}?>
+          <FortyGigE>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{$ipv4_address_b}</ip>
+                <mask>{$subnet_mask}</mask>
+              </address>
+            </ipv4>
+            <?if {link_state = 'no shutdown'}?> 
+            <shutdown tags="delete"/>
+            <?end?>
+            <cdp/>
+          </FortyGigE>
+          <?elif {interface_type = 'HundredGigE'}?>
+          <HundredGigE>
+            <id>{interface_id}</id>
+            <description>{../name}</description>
+            <bandwidth>{../bw}</bandwidth>
+            <mtu>{../mtu}</mtu>
+            <ipv4>
+              <address>
+                <ip>{$ipv4_address_b}</ip>
+                <mask>{$subnet_mask}</mask>
               </address>
             </ipv4>
             <?if {link_state = 'no shutdown'}?> 
