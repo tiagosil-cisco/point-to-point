@@ -45,18 +45,18 @@ class ServiceCallbacks(Service):
             ipv4_address_b = subnet_v4.network_address + 2
             mask_v4 = subnet_v4.netmask
 
-            vars.add('ipv4_address_a', ipv4_address_a)
-            vars.add('ipv4_address_b', ipv4_address_b)
-            vars.add('mask_v4', mask_v4)
+            vars.add('IPV4_ADDRESS_A', ipv4_address_a)
+            vars.add('IPV4_ADDRESS_B', ipv4_address_b)
+            vars.add('MASK_V4', mask_v4)
         
         else:
             ipv4_address_a = ""
             ipv4_address_b = ""
             mask_v4 = ""
 
-            vars.add('ipv4_address_a', ipv4_address_a)
-            vars.add('ipv4_address_b', ipv4_address_b)
-            vars.add('mask_v4', mask_v4)
+            vars.add('IPV4_ADDRESS_A', ipv4_address_a)
+            vars.add('IPV4_ADDRESS_B', ipv4_address_b)
+            vars.add('MASK_V4', mask_v4)
 
         if ipv6_enabled:
             ip_allocator.net_request(service,
@@ -80,18 +80,18 @@ class ServiceCallbacks(Service):
             ipv6_address_b = subnet_v6.network_address + 2
             mask_v6 = subnet_v6.prefixlen
 
-            vars.add('ipv6_address_a', ipv6_address_a)
-            vars.add('ipv6_address_b', ipv6_address_b)
-            vars.add('mask_v6', mask_v6)
+            vars.add('IPV6_ADDRESS_A', ipv6_address_a)
+            vars.add('IPV6_ADDRESS_B', ipv6_address_b)
+            vars.add('MASK_V6', mask_v6)
         
         else:
             ipv6_address_a = ""
             ipv6_address_b = ""
             mask_v6 = ""
 
-            vars.add('ipv6_address_a', ipv6_address_a)
-            vars.add('ipv6_address_b', ipv6_address_b)
-            vars.add('mask_v6', mask_v6)
+            vars.add('IPV6_ADDRESS_A', ipv6_address_a)
+            vars.add('IPV6_ADDRESS_B', ipv6_address_b)
+            vars.add('MASK_V6', mask_v6)
 
 
         bw = service.bw
@@ -105,14 +105,28 @@ class ServiceCallbacks(Service):
             case "100Gbps":
                 bw_new = 100000000
 
+        vars.add('NAME', service.name)
+        vars.add('BW_NEW', bw_new)
+        vars.add('CDP', service.cdp)
+        vars.add('MTU', service.mtu)
+        vars.add('DEVICE_SIDE_A', service.side_a.device)
+        vars.add('INTERFACE_TYPE_A', service.side_a.interface_type)
+        vars.add('INTERFACE_ID_A', service.side_a.interface_id)
+        vars.add('ENCAPSULATION_A', service.side_a.encapsulation)
+        vars.add('SUB_INTERFACE_ID_A', service.side_a.sub_interface_id)
+        vars.add('LINK_STATE_A', service.side_a.link_state)
+        vars.add('VLAN_ID_A', service.side_a.vlan_id)
+        vars.add('VRF_A', service.side_a.vrf_a)
 
-        vars.add('bw_new', bw_new)
-        vars.add('vrf_a', service.side_a.vrf_a)
-        vars.add('vrf_b', service.side_b.vrf_b)
-        vars.add('mtu', service.mtu)
-        vars.add('device_side_a', "A-NCS5-PE01")
-        vars.add('device_side_b', service.side_b.device)
-        vars.add('name', service.name)
+        vars.add('DEVICE_SIDE_B', service.side_b.device)
+        vars.add('INTERFACE_TYPE_B', service.side_b.interface_type)
+        vars.add('INTERFACE_ID_B', service.side_b.interface_id)
+        vars.add('ENCAPSULATION_B', service.side_b.encapsulation)
+        vars.add('SUB_INTERFACE_ID_B', service.side_b.sub_interface_id)
+        vars.add('LINK_STATE_B', service.side_b.link_state)
+        vars.add('VLAN_ID_B', service.side_b.vlan_id)
+        vars.add('VRF_B', service.side_b.vrf_b)
+        
         
         template = ncs.template.Template(service)
         template.apply('point-to-point-template', vars)

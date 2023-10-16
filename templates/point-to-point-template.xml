@@ -1,16 +1,55 @@
 <config-template xmlns="http://tail-f.com/ns/config/1.0">
-  
-  <?macro IntCfgSideA interface_id name bw_new mtu vrf_a ipv4_enabled ipv4_address_a mask_v4 ipv6_enabled ipv6_address_a mask_v6 link_state cdp?>
-  <id>{interface_id}</id>
+ <!-- <?macro IntCfgSideA interface_id sub_interface_id vlan_id name BW_NEW mtu VRF_A ipv4_enabled ipv4_address_a mask_v4 ipv6_enabled ipv6_address_a mask_v6 link_state cdp?>-->
+ <?set name={$NAME}?>
+ <?set bw_new={$BW_NEW}?> 
+ <?set cdp={$CDP}?>
+ <?set mtu={$MTU}?> 
+ <?set device_side_a={$DEVICE_SIDE_A}?> 
+ <?set interface_type_a={$INTERFACE_TYPE_A}?>
+ <?set interface_id_a={$INTERFACE_ID_A}?>
+ <?set encapsulation_a={$ENCAPSULATION_A}?>
+ <?set sub_interface_id_a={$SUB_INTERFACE_ID_A}?>
+ <?set link_state_a={$LINK_STATE_A}?>
+ <?set vlan_id_a={$VLAN_ID_A}?>
+ <?set vrf_a={$VRF_A}?> 
+ <?set ipv4_enabled={/side_a/ipv4_enabled}?> 
+ <?set ipv4_address_a={$IPV4_ADDRESS_A}?> 
+ <?set mask_v4={$MASK_V4}?> 
+ <?set ipv6_enabled={/side_a/ipv6_enabled}?> 
+ <?set ipv6_address_a={$IPV6_ADDRESS_A}?> 
+ <?set mask_v6={$MASK_V4}?> 
+
+ <?set device_side_b={$DEVICE_SIDE_B}?> 
+ <?set interface_type_b={$INTERFACE_TYPE_B}?>
+ <?set interface_id_b={$INTERFACE_ID_B}?>
+ <?set encapsulation_b={$ENCAPSULATION_B}?>
+ <?set sub_interface_id_b={$SUB_INTERFACE_ID_B}?>
+ <?set link_state_b={$LINK_STATE_B}?>
+ <?set vlan_id_b={$VLAN_ID_B}?>
+ <?set vrf_b={$VRF_B}?> 
+ <?set ipv4_address_b={$IPV4_ADDRESS_B}?> 
+ <?set ipv6_address_b={$IPV6_ADDRESS_B}?> 
+
+  <?macro IntCfgSideA?>
+  <?if {$encapsulation != ''}?>
+  <id>{$interface_id_a}.{$sub_interface_id_a}</id>
+  <encapsulation>
+    <dot1q>
+      <vlan-id>{$vlan_id_a}</vlan-id>
+    </dot1q>
+  </encapsulation>
+  <?else?>
+  <id>{$interface_id_a}</id>
+  <?end?>
   <description>{$name}</description>
   <bandwidth>{$bw_new}</bandwidth>
-  <?if {/mtu != ''}?> 
+  <?if {$mtu != ''}?> 
     <mtu>{$mtu}</mtu>
   <?end?>
-  <?if {/side_a/vrf_a != ''}?> 
+  <?if {$vrf_a != ''}?> 
     <vrf>{$vrf_a}</vrf>
   <?end?>
-  <?if {ipv4_enabled = 'true'}?> 
+  <?if {$ipv4_enabled = 'true'}?> 
     <ipv4>
       <address>
         <ip>{$ipv4_address_a}</ip>
@@ -18,7 +57,7 @@
       </address>
     </ipv4>
   <?end?>
-  <?if {ipv6_enabled = 'true'}?> 
+  <?if {$ipv6_enabled = 'true'}?> 
     <ipv6>
       <address>
         <prefix-list>
@@ -27,13 +66,15 @@
       </address>
     </ipv6>
   <?end?>
-  <?if {link_state = 'no shutdown'}?> 
+  <?if {$link_state_a = 'no shutdown'}?> 
     <shutdown tags="delete"/>
   <?else?>
     <shutdown/>
   <?end?>
-  <?if {cdp = 'true'}?> 
+  <?if {$cdp = 'true'}?> 
     <cdp/>
+  <?else?>
+  <cdp tags="delete"/>
   <?end?>
 <?endmacro?>
 
@@ -44,22 +85,24 @@
       <name>{/side_a/device}</name>
       <config>
         <interface xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge">
+          
+
           <?if {/side_a/interface_type = 'GigabitEthernet'}?>
-          <GigabitEthernet>
+          <GigabitEthernet tags="nocreate">
             <id>{/side_a/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_a/vrf_a != ''}?> 
-              <vrf>{$vrf_a}</vrf>
+            <?if {/side_a/VRF_A != ''}?> 
+              <vrf>{$VRF_A}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_a}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_A}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -67,7 +110,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_a}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
@@ -88,19 +131,19 @@
             
             <!--
             <id>{/side_a/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_a/vrf_a != ''}?> 
-              <vrf>{$vrf_a}</vrf>
+            <?if {/side_a/VRF_A != ''}?> 
+              <vrf>{$VRF_A}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_a}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_A}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -108,7 +151,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_a}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
@@ -126,19 +169,19 @@
           <?elif {/side_a/interface_type = 'FortyGigE'}?>
           <FortyGigE>
             <id>{/side_a/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_a/vrf_a != ''}?> 
-              <vrf>{$vrf_a}</vrf>
+            <?if {/side_a/VRF_A != ''}?> 
+              <vrf>{$VRF_A}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_a}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_A}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -146,7 +189,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_a}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
@@ -163,19 +206,19 @@
           <?elif {/side_a/interface_type = 'HundredGigE'}?>
           <HundredGigE>
             <id>{/side_a/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_a/vrf_a != ''}?> 
-              <vrf>{$vrf_a}</vrf>
+            <?if {/side_a/VRF_A != ''}?> 
+              <vrf>{$VRF_A}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_a}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_A}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -183,7 +226,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_a}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
@@ -210,19 +253,19 @@
             <?if {/side_b/interface_type = 'GigabitEthernet'}?>
             <GigabitEthernet>
               <id>{/side_b/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_b/vrf_b != ''}?> 
-              <vrf>{$vrf_b}</vrf>
+            <?if {/side_b/VRF_B != ''}?> 
+              <vrf>{$VRF_B}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_b}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_B}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -230,7 +273,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_b}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
@@ -247,19 +290,19 @@
             <?elif {interface_type = 'TenGigE'}?>
             <TenGigE>
               <id>{/side_b/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_b/vrf_b != ''}?> 
-              <vrf>{$vrf_b}</vrf>
+            <?if {/side_b/VRF_B != ''}?> 
+              <vrf>{$VRF_B}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_b}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_B}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -267,7 +310,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_b}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
@@ -284,19 +327,19 @@
             <?elif {interface_type = 'FortyGigE'}?>
             <FortyGigE>
               <id>{/side_b/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_b/vrf_b != ''}?> 
-              <vrf>{$vrf_b}</vrf>
+            <?if {/side_b/VRF_B != ''}?> 
+              <vrf>{$VRF_B}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_b}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_B}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -304,7 +347,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_b}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
@@ -322,19 +365,19 @@
             <?elif {interface_type = 'HundredGigE'}?>
             <HundredGigE>
               <id>{/side_b/interface_id}</id>
-            <description>{$name}</description>
-            <bandwidth>{$bw_new}</bandwidth>
+            <description>{$NAME}</description>
+            <bandwidth>{$BW_NEW}</bandwidth>
             <?if {/mtu != ''}?> 
-              <mtu>{$mtu}</mtu>
+              <mtu>{$MTU}</mtu>
             <?end?>
-            <?if {/side_b/vrf_b != ''}?> 
-              <vrf>{$vrf_b}</vrf>
+            <?if {/side_b/VRF_B != ''}?> 
+              <vrf>{$VRF_B}</vrf>
             <?end?>
             <?if {/ipv4_enabled = 'true'}?> 
               <ipv4>
                 <address>
-                  <ip>{$ipv4_address_b}</ip>
-                  <mask>{$mask_v4}</mask>
+                  <ip>{$IPV4_ADDRESS_B}</ip>
+                  <mask>{$MASK_V4}</mask>
                 </address>
               </ipv4>
             <?end?>
@@ -342,7 +385,7 @@
               <ipv6>
                 <address>
                   <prefix-list>
-                    <prefix>{$ipv6_address_b}/{$mask_v6}</prefix>
+                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
                   </prefix-list>
                 </address>
               </ipv6>
