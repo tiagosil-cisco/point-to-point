@@ -15,39 +15,105 @@ class ServiceCallbacks(Service):
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
         self.log.info('Service create(service=', service._path, ')')
-        
-        pool_name = "P2P_LINKS"
-        allocation_name = service.name
-        ip_allocator.net_request(service,
-                             "/ncs:services/point-to-point:point-to-point[name='%s']" % (service.name),
-                             tctx.username,
-                             pool_name,
-                             allocation_name,
-                             30)
-
-
-        net = ip_allocator.net_read(tctx.username, root,
-                                pool_name, allocation_name)
-
-        if not net:
-            self.log.info("Alloc not ready")
-            return
-        
-        # ip_prefix = service.ip_prefix
-        # subnet = ipaddress.IPv4Network(ip_prefix)
-        # ipv4_address_a = subnet.network_address + 1
-        # ipv4_address_b = subnet.network_address + 2
-        # subnet_mask = subnet.netmask
-        
-        subnet = ipaddress.IPv4Network(net)
-        ipv4_address_a = subnet.network_address + 1
-        ipv4_address_b = subnet.network_address + 2
-        subnet_mask = subnet.netmask
-
+        self.log.debug()
         vars = ncs.template.Variables()
-        vars.add('ipv4_address_a', ipv4_address_a)
-        vars.add('ipv4_address_b', ipv4_address_b)
-        vars.add('subnet_mask', subnet_mask)
+        ipv4_pool_name = "P2P_BB_IPV4"
+        ipv6_pool_name = "P2P_BB_IPV6"
+        allocation_name = service.name
+        ipv4_enabled = service.ipv4_enabled
+        ipv6_enabled = service.ipv6_enabled
+
+        if ipv4_enabled:
+            ip_allocator.net_request(service,
+                                "/ncs:services/point-to-point:point-to-point[name='%s']" % (service.name),
+                                tctx.username,
+                                ipv4_pool_name,
+                                allocation_name,
+                                30)
+
+
+            net = ip_allocator.net_read(tctx.username, root,
+                                    ipv4_pool_name, allocation_name)
+
+            if not net:
+                self.log.info("Alloc not ready")
+                return
+            
+            
+            subnet_v4 = ipaddress.IPv4Network(net)
+            ipv4_address_a = subnet_v4.network_address + 1
+            ipv4_address_b = subnet_v4.network_address + 2
+            mask_v4 = subnet_v4.netmask
+
+            vars.add('ipv4_address_a', ipv4_address_a)
+            vars.add('ipv4_address_b', ipv4_address_b)
+            vars.add('mask_v4', mask_v4)
+        
+        else:
+            ipv4_address_a = ""
+            ipv4_address_b = ""
+            mask_v4 = ""
+
+            vars.add('ipv4_address_a', ipv4_address_a)
+            vars.add('ipv4_address_b', ipv4_address_b)
+            vars.add('mask_v4', mask_v4)
+
+        if ipv6_enabled:
+            ip_allocator.net_request(service,
+                                "/ncs:services/point-to-point:point-to-point[name='%s']" % (service.name),
+                                tctx.username,
+                                ipv6_pool_name,
+                                allocation_name,
+                                64)
+
+
+            net_v6 = ip_allocator.net_read(tctx.username, root,
+                                    ipv6_pool_name, allocation_name)
+
+            if not net_v6:
+                self.log.info("Alloc not ready")
+                return
+            
+            
+            subnet_v6 = ipaddress.IPv6Network(net_v6)
+            ipv6_address_a = subnet_v6.network_address + 1
+            ipv6_address_b = subnet_v6.network_address + 2
+            mask_v6 = subnet_v6.prefixlen
+
+            vars.add('ipv6_address_a', ipv6_address_a)
+            vars.add('ipv6_address_b', ipv6_address_b)
+            vars.add('mask_v6', mask_v6)
+        
+        else:
+            ipv6_address_a = ""
+            ipv6_address_b = ""
+            mask_v6 = ""
+
+            vars.add('ipv6_address_a', ipv6_address_a)
+            vars.add('ipv6_address_b', ipv6_address_b)
+            vars.add('mask_v6', mask_v6)
+
+
+        bw = service.bw
+        match bw:
+            case "1Gbps":
+                bw_new = 1000000
+            case "10Gbps":
+                bw_new = 10000000
+            case "40Gbps":
+                bw_new = 40000000
+            case "100Gbps":
+                bw_new = 100000000
+
+
+        vars.add('bw_new', bw_new)
+        vars.add('vrf_a', service.side_a.vrf_a)
+        vars.add('vrf_b', service.side_b.vrf_b)
+        vars.add('mtu', service.mtu)
+        vars.add('device_side_a', "A-NCS5-PE01")
+        vars.add('device_side_b', service.side_b.device)
+        vars.add('name', service.name)
+        
         template = ncs.template.Template(service)
         template.apply('point-to-point-template', vars)
 

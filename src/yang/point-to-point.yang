@@ -18,6 +18,7 @@ module point-to-point {
   }
 
 
+
   description
     "Bla bla...";
 
@@ -37,27 +38,45 @@ grouping ipv4_address {
 
 grouping device_int_config {
   leaf device {
-        type leafref {
-          path "/ncs:devices/ncs:device/ncs:name";
-        }
-        mandatory true;
-      }
-      leaf interface_type {
-        type interface_types;
-        mandatory true;
-      }
-      leaf interface_id {
-      type string;
-      mandatory true;
+    type leafref {
+      path "/ncs:devices/ncs:device/ncs:name";
     }
-      // uses ipv4_address;
+  }
+  leaf interface_type {
+    when "../device!=''";
+    type interface_types;
+    mandatory true;
+  }
+  leaf interface_id {
+    when "../interface_type!=''";
+    type string;
+    mandatory true;
+  }
 
-      leaf link_state {
-        type enumeration {
-          enum "shutdown";
-          enum "no shutdown";
-        }
-      }
+  leaf encapsulation {
+    type enumeration {
+      enum "dot1q";
+    }
+  }
+
+  leaf sub_interface_id {
+    when "../encapsulation!=''";
+    type uint16;
+  }
+
+  leaf vlan_id {
+    when "../encapsulation!=''";
+    type uint16;
+  }
+      
+
+  leaf link_state {
+    when "../interface_type!=''";
+    type enumeration {
+      enum "shutdown";
+      enum "no shutdown";
+    }
+  }
 
 }
 typedef interface_types {
@@ -85,21 +104,21 @@ key name;
     ncs:servicepoint point-to-point-servicepoint;
 
     leaf bw {
-            type enumeration {
-              enum "1 Gbps" {
-                value "1000000";
-              }
-              enum "10 Gbps" {
-                value "10000000";
-              }
-              enum "40 Gbps" {
-                value "40000000";
-              }
-              
-              enum "100 Gbps"{
-                value "100000000";
-              }
-            }
+      type enumeration {
+        enum "1Gbps" {
+          value "1000000";
+        }
+        enum "10Gbps" {
+          value "10000000";
+        }
+        enum "40Gbps" {
+          value "40000000";
+        }
+        
+        enum "100Gbps"{
+          value "100000000";
+        }
+      }
     }
 
     leaf cdp {
@@ -110,16 +129,47 @@ key name;
       type int32;
     }
 
-    leaf ip_prefix {
-      type inet:ipv4-prefix;
+    leaf ipv4_enabled {
+      type boolean;
     }
 
+/*
+    leaf ipv4_block {
+      when "../ipv4_enabled='true'";
+      type leafref {
+        path "/resource-pools/ipalloc:ip-address-pool/ncs:name";
+      }
+      mandatory true;
+    }
+*/
+    leaf ipv6_enabled {
+      type boolean;
+    }
+/*
+    leaf ipv6_block {
+      when "../ipv6_enabled='true'";
+      type leafref {
+        path "/resource-pools/ipalloc:ip-address-pool/ncs:name";
+      }
+      mandatory true;
+    }
+*/
     container side_a {
       uses device_int_config;
+
+      leaf vrf_a {
+        when "../interface_type!=''";
+        type string;
+      }
     }
 
     container side_b {
       uses device_int_config;
+
+      leaf vrf_b {
+        when "../interface_type!=''";
+        type string;
+      }
     }
 
 
