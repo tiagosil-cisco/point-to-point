@@ -127,6 +127,7 @@ class ServiceCallbacks(Service):
         vars.add('VLAN_ID_B', service.side_b.vlan_id)
         vars.add('VRF_B', service.side_b.vrf_b)
         
+        print(service.side_a.device)
         
         template = ncs.template.Template(service)
         template.apply('point-to-point-template', vars)

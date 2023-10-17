@@ -1,404 +1,264 @@
 <config-template xmlns="http://tail-f.com/ns/config/1.0">
- <!-- <?macro IntCfgSideA interface_id sub_interface_id vlan_id name BW_NEW mtu VRF_A ipv4_enabled ipv4_address_a mask_v4 ipv6_enabled ipv6_address_a mask_v6 link_state cdp?>-->
- <?set name={$NAME}?>
- <?set bw_new={$BW_NEW}?> 
- <?set cdp={$CDP}?>
- <?set mtu={$MTU}?> 
- <?set device_side_a={$DEVICE_SIDE_A}?> 
- <?set interface_type_a={$INTERFACE_TYPE_A}?>
- <?set interface_id_a={$INTERFACE_ID_A}?>
- <?set encapsulation_a={$ENCAPSULATION_A}?>
- <?set sub_interface_id_a={$SUB_INTERFACE_ID_A}?>
- <?set link_state_a={$LINK_STATE_A}?>
- <?set vlan_id_a={$VLAN_ID_A}?>
- <?set vrf_a={$VRF_A}?> 
- <?set ipv4_enabled={/side_a/ipv4_enabled}?> 
- <?set ipv4_address_a={$IPV4_ADDRESS_A}?> 
- <?set mask_v4={$MASK_V4}?> 
- <?set ipv6_enabled={/side_a/ipv6_enabled}?> 
- <?set ipv6_address_a={$IPV6_ADDRESS_A}?> 
- <?set mask_v6={$MASK_V4}?> 
-
- <?set device_side_b={$DEVICE_SIDE_B}?> 
- <?set interface_type_b={$INTERFACE_TYPE_B}?>
- <?set interface_id_b={$INTERFACE_ID_B}?>
- <?set encapsulation_b={$ENCAPSULATION_B}?>
- <?set sub_interface_id_b={$SUB_INTERFACE_ID_B}?>
- <?set link_state_b={$LINK_STATE_B}?>
- <?set vlan_id_b={$VLAN_ID_B}?>
- <?set vrf_b={$VRF_B}?> 
- <?set ipv4_address_b={$IPV4_ADDRESS_B}?> 
- <?set ipv6_address_b={$IPV6_ADDRESS_B}?> 
-
+  
   <?macro IntCfgSideA?>
-  <?if {$encapsulation != ''}?>
-  <id>{$interface_id_a}.{$sub_interface_id_a}</id>
-  <encapsulation>
-    <dot1q>
-      <vlan-id>{$vlan_id_a}</vlan-id>
-    </dot1q>
-  </encapsulation>
-  <?else?>
-  <id>{$interface_id_a}</id>
-  <?end?>
-  <description>{$name}</description>
-  <bandwidth>{$bw_new}</bandwidth>
-  <?if {$mtu != ''}?> 
-    <mtu>{$mtu}</mtu>
-  <?end?>
-  <?if {$vrf_a != ''}?> 
-    <vrf>{$vrf_a}</vrf>
-  <?end?>
-  <?if {$ipv4_enabled = 'true'}?> 
-    <ipv4>
-      <address>
-        <ip>{$ipv4_address_a}</ip>
-        <mask>{$mask_v4}</mask>
-      </address>
-    </ipv4>
-  <?end?>
-  <?if {$ipv6_enabled = 'true'}?> 
-    <ipv6>
-      <address>
-        <prefix-list>
-          <prefix>{$ipv6_address_a}/{$mask_v6}</prefix>
-        </prefix-list>
-      </address>
-    </ipv6>
-  <?end?>
-  <?if {$link_state_a = 'no shutdown'}?> 
-    <shutdown tags="delete"/>
-  <?else?>
-    <shutdown/>
-  <?end?>
-  <?if {$cdp = 'true'}?> 
-    <cdp/>
-  <?else?>
-  <cdp tags="delete"/>
-  <?end?>
-<?endmacro?>
+    <?set name={$NAME}?>
+    <?set bw_new={$BW_NEW}?> 
+    <?set cdp={$CDP}?>
+    <?set mtu={$MTU}?> 
 
-  
-  
+    <?set link_state_a={$LINK_STATE_A}?>
+    <?set vlan_id_a={$VLAN_ID_A}?>
+    <?set vrf_a={$VRF_A}?> 
+    <?set ipv4_enabled={/ipv4_enabled}?> 
+    <?set ipv4_address_a={$IPV4_ADDRESS_A}?> 
+    <?set mask_v4={$MASK_V4}?> 
+    <?set ipv6_enabled={/ipv6_enabled}?> 
+    <?set ipv6_address_a={$IPV6_ADDRESS_A}?> 
+    <?set mask_v6={$MASK_V4}?> 
+
+    <description>{$name}</description>
+    <bandwidth>{$bw_new}</bandwidth>
+    <?if {$mtu != ''}?> 
+      <mtu>{$mtu}</mtu>
+    <?end?>
+    <?if {$vrf_a != 'None'}?> 
+      <vrf>{$vrf_a}</vrf>
+    <?end?>
+    <?if {$ipv4_enabled = 'true'}?> 
+      <ipv4>
+        <address>
+          <ip>{$ipv4_address_a}</ip>
+          <mask>{$mask_v4}</mask>
+        </address>
+      </ipv4>
+    <?end?>
+    <?if {$ipv6_enabled = 'true'}?> 
+      <ipv6>
+        <address>
+          <prefix-list>
+            <prefix>{$ipv6_address_a}/{$mask_v6}</prefix>
+          </prefix-list>
+        </address>
+      </ipv6>
+    <?end?>
+    <?if {$link_state_a = 'no shutdown'}?> 
+      <shutdown tags="delete"/>
+    <?else?>
+      <shutdown/>
+    <?end?>
+    <?if {$cdp = 'true'}?> 
+      <cdp/>
+    <?else?>
+      <cdp tags="delete"/>
+    <?end?>
+  <?endmacro?>
+
+  <?macro IntCfgSideB?>
+    <?set name={$NAME}?>
+    <?set bw_new={$BW_NEW}?> 
+    <?set cdp={$CDP}?>
+    <?set mtu={$MTU}?> 
+
+    <?set link_state_b={$LINK_STATE_B}?>
+    <?set vlan_id_b={$VLAN_ID_B}?>
+    <?set vrf_b={$VRF_B}?> 
+    <?set ipv4_enabled={/ipv4_enabled}?> 
+    <?set ipv4_address_b={$IPV4_ADDRESS_B}?> 
+    <?set mask_v4={$MASK_V4}?> 
+    <?set ipv6_enabled={/ipv6_enabled}?> 
+    <?set ipv6_address_b={$IPV6_ADDRESS_B}?> 
+    <?set mask_v6={$MASK_V4}?> 
+
+    <description>{$name}</description>
+    <bandwidth>{$bw_new}</bandwidth>
+    <?if {$mtu != ''}?> 
+      <mtu>{$mtu}</mtu>
+    <?end?>
+    <?if {$vrf_b != 'None'}?> 
+      <vrf>{$vrf_b}</vrf>
+    <?end?>
+    <?if {$ipv4_enabled = 'true'}?> 
+      <ipv4>
+        <address>
+          <ip>{$ipv4_address_b}</ip>
+          <mask>{$mask_v4}</mask>
+        </address>
+      </ipv4>
+    <?end?>
+    <?if {$ipv6_enabled = 'true'}?> 
+      <ipv6>
+        <address>
+          <prefix-list>
+            <prefix>{$ipv6_address_b}/{$mask_v6}</prefix>
+          </prefix-list>
+        </address>
+      </ipv6>
+    <?end?>
+    <?if {$link_state_b = 'no shutdown'}?> 
+      <shutdown tags="delete"/>
+    <?else?>
+      <shutdown/>
+    <?end?>
+    <?if {$cdp = 'true'}?> 
+      <cdp/>
+    <?else?>
+      <cdp tags="delete"/>
+    <?end?>
+  <?endmacro?>
+
   <devices xmlns="http://tail-f.com/ns/ncs">
     <device>
-      <name>{/side_a/device}</name>
+      <name>{$DEVICE_SIDE_A}</name>
       <config>
-        <interface xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge">
-          
-
+        <interface xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge"> 
           <?if {/side_a/interface_type = 'GigabitEthernet'}?>
-          <GigabitEthernet tags="nocreate">
-            <id>{/side_a/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_a/VRF_A != ''}?> 
-              <vrf>{$VRF_A}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_A}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_a/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
+            <?if {$ENCAPSULATION_A != 'None'}?>
+              <GigabitEthernet >
+                <id>{$INTERFACE_ID_A}.{$SUB_INTERFACE_ID_A}</id>
+                <encapsulation>
+                  <dot1q>
+                    <vlan-id>{$VLAN_ID_A}</vlan-id>
+                  </dot1q>
+                </encapsulation>
+                <?expand IntCfgSideA ?>
+              </GigabitEthernet>
             <?else?>
-              <shutdown/>
+              <GigabitEthernet >
+                <id>{$INTERFACE_ID_A}</id>
+                <?expand IntCfgSideA ?>
+              </GigabitEthernet>
             <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-          </GigabitEthernet>
-          <?elif {/side_a/interface_type = 'TenGigE'}?>
-          <TenGigE>
-            
-              <?expand IntCfgSideA ?>
-            
-            <!--
-            <id>{/side_a/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_a/VRF_A != ''}?> 
-              <vrf>{$VRF_A}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_A}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_a/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
+            <?elif {/side_a/interface_type = 'TenGigE'}?>
+              <?if {$ENCAPSULATION_A != 'None'}?>
+                <TenGigE >
+                  <id>{$INTERFACE_ID_A}.{$SUB_INTERFACE_ID_A}</id>
+                  <encapsulation>
+                    <dot1q>
+                      <vlan-id>{$VLAN_ID_A}</vlan-id>
+                    </dot1q>
+                  </encapsulation>
+                  <?expand IntCfgSideA ?>
+                </TenGigE>
+              <?else?>
+                <TenGigE >
+                  <id>{$INTERFACE_ID_A}</id>
+                  <?expand IntCfgSideA ?>
+                </TenGigE>
+              <?end?>
+            <?elif {/side_a/interface_type = 'FortyGigE'}?>
+            <?if {$ENCAPSULATION_A != 'None'}?>
+              <FortyGigE >
+                <id>{$INTERFACE_ID_A}.{$SUB_INTERFACE_ID_A}</id>
+                <encapsulation>
+                  <dot1q>
+                    <vlan-id>{$VLAN_ID_A}</vlan-id>
+                  </dot1q>
+                </encapsulation>
+                <?expand IntCfgSideA ?>
+              </FortyGigE>
             <?else?>
-              <shutdown/>
+              <FortyGigE >
+                <id>{$INTERFACE_ID_A}</id>
+                <?expand IntCfgSideA ?>
+              </FortyGigE>
             <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-            -->
-          </TenGigE>
-          <?elif {/side_a/interface_type = 'FortyGigE'}?>
-          <FortyGigE>
-            <id>{/side_a/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_a/VRF_A != ''}?> 
-              <vrf>{$VRF_A}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_A}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_a/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
+
+            <?elif {/side_a/interface_type = 'HundredGigE'}?>
+            <?if {$ENCAPSULATION_A != 'None'}?>
+              <HundredGigE >
+                <id>{$INTERFACE_ID_A}.{$SUB_INTERFACE_ID_A}</id>
+                <encapsulation>
+                  <dot1q>
+                    <vlan-id>{$VLAN_ID_A}</vlan-id>
+                  </dot1q>
+                </encapsulation>
+                <?expand IntCfgSideA ?>
+              </HundredGigE>
             <?else?>
-              <shutdown/>
+              <HundredGigE >
+                <id>{$INTERFACE_ID_A}</id>
+                <?expand IntCfgSideA ?>
+              </HundredGigE>
             <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-          </FortyGigE>
-          <?elif {/side_a/interface_type = 'HundredGigE'}?>
-          <HundredGigE>
-            <id>{/side_a/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_a/VRF_A != ''}?> 
-              <vrf>{$VRF_A}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_A}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_A}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_a/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
-            <?else?>
-              <shutdown/>
-            <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-          </HundredGigE>
           <?end?>
         </interface>
       </config>
     </device>
-    <?if {/side_b/device != ''}?> 
+    <?if {$DEVICE_SIDE_B != 'None'}?> 
       <device>
         
-        <name>{/side_b/device}</name>
+        <name>{$DEVICE_SIDE_B}</name>
         <config>
-          <interface xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge">
+          <interface xmlns="http://tail-f.com/ned/cisco-ios-xr" tags="merge"> 
             <?if {/side_b/interface_type = 'GigabitEthernet'}?>
-            <GigabitEthernet>
-              <id>{/side_b/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_b/VRF_B != ''}?> 
-              <vrf>{$VRF_B}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_B}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_b/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
-            <?else?>
-              <shutdown/>
-            <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-            </GigabitEthernet>
-            <?elif {interface_type = 'TenGigE'}?>
-            <TenGigE>
-              <id>{/side_b/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_b/VRF_B != ''}?> 
-              <vrf>{$VRF_B}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_B}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_b/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
-            <?else?>
-              <shutdown/>
-            <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-            </TenGigE>
-            <?elif {interface_type = 'FortyGigE'}?>
-            <FortyGigE>
-              <id>{/side_b/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_b/VRF_B != ''}?> 
-              <vrf>{$VRF_B}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_B}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_b/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
-            <?else?>
-              <shutdown/>
-            <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-            
-            </FortyGigE>
-            <?elif {interface_type = 'HundredGigE'}?>
-            <HundredGigE>
-              <id>{/side_b/interface_id}</id>
-            <description>{$NAME}</description>
-            <bandwidth>{$BW_NEW}</bandwidth>
-            <?if {/mtu != ''}?> 
-              <mtu>{$MTU}</mtu>
-            <?end?>
-            <?if {/side_b/VRF_B != ''}?> 
-              <vrf>{$VRF_B}</vrf>
-            <?end?>
-            <?if {/ipv4_enabled = 'true'}?> 
-              <ipv4>
-                <address>
-                  <ip>{$IPV4_ADDRESS_B}</ip>
-                  <mask>{$MASK_V4}</mask>
-                </address>
-              </ipv4>
-            <?end?>
-            <?if {/ipv6_enabled = 'true'}?> 
-              <ipv6>
-                <address>
-                  <prefix-list>
-                    <prefix>{$IPV6_ADDRESS_B}/{$mask_v6}</prefix>
-                  </prefix-list>
-                </address>
-              </ipv6>
-            <?end?>
-            <?if {/side_b/link_state = 'no shutdown'}?> 
-              <shutdown tags="delete"/>
-            <?else?>
-              <shutdown/>
-            <?end?>
-            <?if {/cdp = 'true'}?> 
-              <cdp/>
-            <?end?>
-            </HundredGigE>
+              <?if {$ENCAPSULATION_B != 'None'}?>
+                <GigabitEthernet >
+                  <id>{$INTERFACE_ID_B}.{$SUB_INTERFACE_ID_B}</id>
+                  <encapsulation>
+                    <dot1q>
+                      <vlan-id>{$VLAN_ID_B}</vlan-id>
+                    </dot1q>
+                  </encapsulation>
+                  <?expand IntCfgSideB ?>
+                </GigabitEthernet>
+              <?else?>
+                <GigabitEthernet >
+                  <id>{$INTERFACE_ID_B}</id>
+                  <?expand IntCfgSideB ?>
+                </GigabitEthernet>
+              <?end?>
+              <?elif {/side_b/interface_type = 'TenGigE'}?>
+                <?if {$ENCAPSULATION_B != 'None'}?>
+                  <TenGigE >
+                    <id>{$INTERFACE_ID_B}.{$SUB_INTERFACE_ID_B}</id>
+                    <encapsulation>
+                      <dot1q>
+                        <vlan-id>{$VLAN_ID_B}</vlan-id>
+                      </dot1q>
+                    </encapsulation>
+                    <?expand IntCfgSideB ?>
+                  </TenGigE>
+                <?else?>
+                  <TenGigE >
+                    <id>{$INTERFACE_ID_B}</id>
+                    <?expand IntCfgSideB ?>
+                  </TenGigE>
+                <?end?>
+              <?elif {/side_b/interface_type = 'FortyGigE'}?>
+              <?if {$ENCAPSULATION_B != 'None'}?>
+                <FortyGigE >
+                  <id>{$INTERFACE_ID_B}.{$SUB_INTERFACE_ID_B}</id>
+                  <encapsulation>
+                    <dot1q>
+                      <vlan-id>{$VLAN_ID_B}</vlan-id>
+                    </dot1q>
+                  </encapsulation>
+                  <?expand IntCfgSideB ?>
+                </FortyGigE>
+              <?else?>
+                <FortyGigE >
+                  <id>{$INTERFACE_ID_B}</id>
+                  <?expand IntCfgSideB ?>
+                </FortyGigE>
+              <?end?>
+  
+              <?elif {/side_b/interface_type = 'HundredGigE'}?>
+              <?if {$ENCAPSULATION_B != 'None'}?>
+                <HundredGigE >
+                  <id>{$INTERFACE_ID_B}.{$SUB_INTERFACE_ID_B}</id>
+                  <encapsulation>
+                    <dot1q>
+                      <vlan-id>{$VLAN_ID_B}</vlan-id>
+                    </dot1q>
+                  </encapsulation>
+                  <?expand IntCfgSideB ?>
+                </HundredGigE>
+              <?else?>
+                <HundredGigE >
+                  <id>{$INTERFACE_ID_B}</id>
+                  <?expand IntCfgSideB ?>
+                </HundredGigE>
+              <?end?>
             <?end?>
           </interface>
         </config>
