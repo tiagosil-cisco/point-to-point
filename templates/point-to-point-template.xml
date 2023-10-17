@@ -211,7 +211,7 @@
       <ipv6>
         <address>
           <prefix-list>
-            <prefix>{$ipv6_address_b}/{$mask_vb}</prefix>
+            <prefix>{$ipv6_address_b}/{$mask_v4}</prefix>
           </prefix-list>
         </address>
       </ipv6>
