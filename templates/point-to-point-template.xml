@@ -1,6 +1,6 @@
 <config-template xmlns="http://tail-f.com/ns/config/1.0">
   
-  <?macro IntCfgSideA?>
+  <?macro XRIntCfgSideA?>
     <?set name={$NAME}?>
     <?set bw_new={$BW_NEW}?> 
     <?set cdp={$CDP}?>
@@ -14,7 +14,7 @@
     <?set mask_v4={$MASK_V4}?> 
     <?set ipv6_enabled={/ipv6_enabled}?> 
     <?set ipv6_address_a={$IPV6_ADDRESS_A}?> 
-    <?set mask_v6={$MASK_V4}?> 
+    <?set mask_v6={$MASK_V6}?> 
 
     <description>{$name}</description>
     <bandwidth>{$bw_new}</bandwidth>
@@ -53,7 +53,7 @@
     <?end?>
   <?endmacro?>
 
-  <?macro IntCfgSideB?>
+  <?macro XRIntCfgSideB?>
     <?set name={$NAME}?>
     <?set bw_new={$BW_NEW}?> 
     <?set cdp={$CDP}?>
@@ -67,7 +67,7 @@
     <?set mask_v4={$MASK_V4}?> 
     <?set ipv6_enabled={/ipv6_enabled}?> 
     <?set ipv6_address_b={$IPV6_ADDRESS_B}?> 
-    <?set mask_v6={$MASK_V4}?> 
+    <?set mask_v6={$MASK_V6}?> 
 
     <description>{$name}</description>
     <bandwidth>{$bw_new}</bandwidth>
@@ -106,6 +106,133 @@
     <?end?>
   <?endmacro?>
 
+  <?macro XEIntCfgSideA?>
+    <?set name={$NAME}?>
+    <?set bw_new={$BW_NEW}?> 
+    <?set cdp={$CDP}?>
+    <?set mtu={$MTU}?> 
+
+    <?set link_state_a={$LINK_STATE_A}?>
+    <?set vlan_id_a={$VLAN_ID_A}?>
+    <?set vrf_a={$VRF_A}?> 
+    <?set ipv4_enabled={/ipv4_enabled}?> 
+    <?set ipv4_address_a={$IPV4_ADDRESS_A}?> 
+    <?set mask_v4={$MASK_V4}?> 
+    <?set ipv6_enabled={/ipv6_enabled}?> 
+    <?set ipv6_address_a={$IPV6_ADDRESS_A}?> 
+    <?set mask_v6={$MASK_V6}?> 
+
+    <description>{$name}</description>
+    <bandwidth>
+      <kilobits>{$bw_new}</kilobits>
+    </bandwidth>
+    <?if {$mtu != 'None'}?> 
+      <mtu>{$mtu}</mtu>
+    <?end?>
+    <?if {$vrf_a != 'None'}?> 
+      <vrf>
+        <forwarding>{$vrf_a}</forwarding>
+      </vrf>
+    <?end?>
+    <?if {$ipv4_enabled = 'true'}?> 
+      <ip>
+        <address>
+          <primary>
+            <address>{$ipv4_address_a}</address>
+            <mask>{$mask_v4}</mask>
+          </primary>
+        </address>
+      </ip>
+    <?end?>
+    <?if {$ipv6_enabled = 'true'}?> 
+      <ipv6>
+        <address>
+          <prefix-list>
+            <prefix>{$ipv6_address_a}/{$mask_v6}</prefix>
+          </prefix-list>
+        </address>
+      </ipv6>
+    <?end?>
+    <?if {$link_state_a = 'no shutdown'}?> 
+      <shutdown tags="delete"/>
+    <?else?>
+      <shutdown/>
+    <?end?>
+    <?if {$cdp = 'true'}?> 
+    <cdp>
+      <enable>true</enable>
+    </cdp>
+    <?else?>
+    <cdp>
+      <enable>false</enable>
+    </cdp>
+    <?end?>
+  <?endmacro?>
+
+  <?macro XEIntCfgSideB?>
+    <?set name={$NAME}?>
+    <?set bw_new={$BW_NEW}?> 
+    <?set cdp={$CDP}?>
+    <?set mtu={$MTU}?> 
+
+    <?set link_state_b={$LINK_STATE_B}?>
+    <?set vlan_id_b={$VLAN_ID_B}?>
+    <?set vrf_b={$VRF_B}?> 
+    <?set ipv4_enabled={/ipv4_enabled}?> 
+    <?set ipv4_address_b={$IPV4_ADDRESS_B}?> 
+    <?set mask_v4={$MASK_V4}?> 
+    <?set ipv6_enabled={/ipv6_enabled}?> 
+    <?set ipv6_address_b={$IPV6_ADDRESS_B}?> 
+    <?set mask_v6={$MASK_V6}?> 
+
+    <description>{$name}</description>
+    <bandwidth>
+      <kilobits>{$bw_new}</kilobits>
+    </bandwidth>
+    <?if {$mtu != 'None'}?> 
+      <mtu>{$mtu}</mtu>
+    <?end?>
+    <?if {$vrf_b != 'None'}?> 
+      <vrf>
+        <forwarding>{$vrf_b}</forwarding>
+      </vrf>
+    <?end?>
+    <?if {$ipv4_enabled = 'true'}?> 
+      <ip>
+        <address>
+          <primary>
+            <address>{$ipv4_address_b}</address>
+            <mask>{$mask_v4}</mask>
+          </primary>
+        </address>
+      </ip>
+    <?end?>
+    <?if {$ipv6_enabled = 'true'}?> 
+      <ipv6>
+        <address>
+          <prefix-list>
+            <prefix>{$ipv6_address_b}/{$mask_vb}</prefix>
+          </prefix-list>
+        </address>
+      </ipv6>
+    <?end?>
+    <?if {$link_state_b = 'no shutdown'}?> 
+      <shutdown tags="delete"/>
+    <?else?>
+      <shutdown/>
+    <?end?>
+    <?if {$cdp = 'true'}?> 
+    <cdp>
+      <enable>true</enable>
+    </cdp>
+    <?else?>
+    <cdp>
+      <enable>false</enable>
+    </cdp>
+    <?end?>
+  <?endmacro?>
+
+
   <devices xmlns="http://tail-f.com/ns/ncs">
     <device>
       <name>{$DEVICE_SIDE_A}</name>
@@ -120,12 +247,12 @@
                     <vlan-id>{$VLAN_ID_A}</vlan-id>
                   </dot1q>
                 </encapsulation>
-                <?expand IntCfgSideA ?>
+                <?expand XRIntCfgSideA ?>
               </GigabitEthernet>
             <?else?>
               <GigabitEthernet >
                 <id>{$INTERFACE_ID_A}</id>
-                <?expand IntCfgSideA ?>
+                <?expand XRIntCfgSideA ?>
               </GigabitEthernet>
             <?end?>
             <?elif {/side_a/interface_type = 'TenGigE'}?>
@@ -137,12 +264,12 @@
                       <vlan-id>{$VLAN_ID_A}</vlan-id>
                     </dot1q>
                   </encapsulation>
-                  <?expand IntCfgSideA ?>
+                  <?expand XRIntCfgSideA ?>
                 </TenGigE>
               <?else?>
                 <TenGigE >
                   <id>{$INTERFACE_ID_A}</id>
-                  <?expand IntCfgSideA ?>
+                  <?expand XRIntCfgSideA ?>
                 </TenGigE>
               <?end?>
             <?elif {/side_a/interface_type = 'FortyGigE'}?>
@@ -154,12 +281,12 @@
                     <vlan-id>{$VLAN_ID_A}</vlan-id>
                   </dot1q>
                 </encapsulation>
-                <?expand IntCfgSideA ?>
+                <?expand XRIntCfgSideA ?>
               </FortyGigE>
             <?else?>
               <FortyGigE >
                 <id>{$INTERFACE_ID_A}</id>
-                <?expand IntCfgSideA ?>
+                <?expand XRIntCfgSideA ?>
               </FortyGigE>
             <?end?>
 
@@ -172,13 +299,33 @@
                     <vlan-id>{$VLAN_ID_A}</vlan-id>
                   </dot1q>
                 </encapsulation>
-                <?expand IntCfgSideA ?>
+                <?expand XRIntCfgSideA ?>
               </HundredGigE>
             <?else?>
               <HundredGigE >
                 <id>{$INTERFACE_ID_A}</id>
-                <?expand IntCfgSideA ?>
+                <?expand XRIntCfgSideA ?>
               </HundredGigE>
+            <?end?>
+          <?end?>
+        </interface>
+        <interface xmlns="urn:ios">
+          <?if {/side_a/interface_type = 'GigabitEthernet'}?>
+            <?if {$ENCAPSULATION_A != 'None'}?>
+              <GigabitEthernet >
+                <name>{$INTERFACE_ID_A}.{$SUB_INTERFACE_ID_A}</name>
+                <encapsulation>
+                  <dot1Q>
+                    <vlan-id>{$VLAN_ID_A}</vlan-id>
+                  </dot1Q>
+                </encapsulation>
+                <?expand XEIntCfgSideA ?>
+              </GigabitEthernet>
+            <?else?>
+              <GigabitEthernet >
+                <name>{$INTERFACE_ID_A}</name>
+                <?expand XEIntCfgSideA ?>
+              </GigabitEthernet>
             <?end?>
           <?end?>
         </interface>
@@ -199,12 +346,12 @@
                       <vlan-id>{$VLAN_ID_B}</vlan-id>
                     </dot1q>
                   </encapsulation>
-                  <?expand IntCfgSideB ?>
+                  <?expand XRIntCfgSideB ?>
                 </GigabitEthernet>
               <?else?>
                 <GigabitEthernet >
                   <id>{$INTERFACE_ID_B}</id>
-                  <?expand IntCfgSideB ?>
+                  <?expand XRIntCfgSideB ?>
                 </GigabitEthernet>
               <?end?>
               <?elif {/side_b/interface_type = 'TenGigE'}?>
@@ -216,12 +363,12 @@
                         <vlan-id>{$VLAN_ID_B}</vlan-id>
                       </dot1q>
                     </encapsulation>
-                    <?expand IntCfgSideB ?>
+                    <?expand XRIntCfgSideB ?>
                   </TenGigE>
                 <?else?>
                   <TenGigE >
                     <id>{$INTERFACE_ID_B}</id>
-                    <?expand IntCfgSideB ?>
+                    <?expand XRIntCfgSideB ?>
                   </TenGigE>
                 <?end?>
               <?elif {/side_b/interface_type = 'FortyGigE'}?>
@@ -233,12 +380,12 @@
                       <vlan-id>{$VLAN_ID_B}</vlan-id>
                     </dot1q>
                   </encapsulation>
-                  <?expand IntCfgSideB ?>
+                  <?expand XRIntCfgSideB ?>
                 </FortyGigE>
               <?else?>
                 <FortyGigE >
                   <id>{$INTERFACE_ID_B}</id>
-                  <?expand IntCfgSideB ?>
+                  <?expand XRIntCfgSideB ?>
                 </FortyGigE>
               <?end?>
   
@@ -251,13 +398,33 @@
                       <vlan-id>{$VLAN_ID_B}</vlan-id>
                     </dot1q>
                   </encapsulation>
-                  <?expand IntCfgSideB ?>
+                  <?expand XRIntCfgSideB ?>
                 </HundredGigE>
               <?else?>
                 <HundredGigE >
                   <id>{$INTERFACE_ID_B}</id>
-                  <?expand IntCfgSideB ?>
+                  <?expand XRIntCfgSideB ?>
                 </HundredGigE>
+              <?end?>
+            <?end?>
+          </interface>
+          <interface xmlns="urn:ios">
+            <?if {/side_a/interface_type = 'GigabitEthernet'}?>
+              <?if {$ENCAPSULATION_B != 'None'}?>
+                <GigabitEthernet >
+                  <name>{$INTERFACE_ID_B}.{$SUB_INTERFACE_ID_B}</name>
+                  <encapsulation>
+                    <dot1Q>
+                      <vlan-id>{$VLAN_ID_B}</vlan-id>
+                    </dot1Q>
+                  </encapsulation>
+                  <?expand XEIntCfgSideB ?>
+                </GigabitEthernet>
+              <?else?>
+                <GigabitEthernet >
+                  <name>{$INTERFACE_ID_B}</name>
+                  <?expand XEIntCfgSideB ?>
+                </GigabitEthernet>
               <?end?>
             <?end?>
           </interface>
